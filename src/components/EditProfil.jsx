@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import { db, auth } from './firebaseConfig';
+import { db, FIREBASE_AUTH } from '../firebaseConfig';
 
 const EditProfile = () => {
     const [userData, setUserData] = useState({
@@ -23,7 +23,7 @@ const EditProfile = () => {
             }
         };
 
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
             if (user) {
                 setUserId(user.uid);
                 fetchUserData(user.uid);

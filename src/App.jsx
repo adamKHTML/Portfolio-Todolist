@@ -6,6 +6,8 @@ import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
 import TaskForm from './components/TaskForm';
+import EditProfile from './components/EditProfil';
+import EditTask from './components/EditTask';
 
 function App() {
 
@@ -18,7 +20,8 @@ function App() {
         <Route path="/Register" element={<Register />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Formulaire" element={<TaskForm />} />
-
+        <Route path="/Edit" element={<EditProfile />} />
+        <Route path="/Task/:id" element={<EditTask />} />
       </Routes>
 
     </Router>

@@ -52,39 +52,46 @@ const Dashboard = () => {
                         Créer une tâche
                     </button>
                 </Link>
+                <Link to="/Edit" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <button type="button" className="btn btn-dark">
+                        Modifier profile
+                    </button>
+                </Link>
             </TopContainer>
             <ChecklistContainer>
                 {tasks.length > 0 ? (
                     tasks.map((task) => (
                         <div key={task.id}>
-                            <Card border="primary" className="task-card">
-                                <CardHeader>{task.name}</CardHeader>
-                                <CardBody>
-                                    <CardText>{task.description}</CardText>
-                                    <Status status={task.status}>
-                                        Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
-                                    </Status>
-                                    <Deadline>
-                                        Deadline: {new Date(task.deadline).toLocaleString()}
-                                    </Deadline>
-                                    {task.tasks && Array.isArray(task.tasks) && task.tasks.length > 0 ? (
-                                        <SubTaskList>
-                                            {task.tasks.map((subTask, index) => (
-                                                <SubTaskItem
-                                                    key={index}
-                                                    className={`d-flex justify-content-between align-items-start ${subTask.status === 1 ? 'task-done' : ''}`}
-                                                >
-                                                    <div className="ms-2 me-auto">
-                                                        <div className={`fw-bold ${subTask.status === 1 ? 'done-task' : ''}`}>{subTask.name}</div>
-                                                    </div>
-                                                </SubTaskItem>
-                                            ))}
-                                        </SubTaskList>
-                                    ) : (
-                                        <p>No sub-tasks available for this task.</p>
-                                    )}
-                                </CardBody>
-                            </Card>
+                            <Link to={`/Task/${task.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Card border="primary" className="task-card">
+                                    <CardHeader>{task.name}</CardHeader>
+                                    <CardBody>
+                                        <CardText>{task.description}</CardText>
+                                        <Status status={task.status}>
+                                            Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
+                                        </Status>
+                                        <Deadline>
+                                            Deadline: {new Date(task.deadline).toLocaleString()}
+                                        </Deadline>
+                                        {task.tasks && Array.isArray(task.tasks) && task.tasks.length > 0 ? (
+                                            <SubTaskList>
+                                                {task.tasks.map((subTask, index) => (
+                                                    <SubTaskItem
+                                                        key={index}
+                                                        className={`d-flex justify-content-between align-items-start ${subTask.status === 1 ? 'task-done' : ''}`}
+                                                    >
+                                                        <div className="ms-2 me-auto">
+                                                            <div className={`fw-bold ${subTask.status === 1 ? 'done-task' : ''}`}>{subTask.name}</div>
+                                                        </div>
+                                                    </SubTaskItem>
+                                                ))}
+                                            </SubTaskList>
+                                        ) : (
+                                            <p>No sub-tasks available for this task.</p>
+                                        )}
+                                    </CardBody>
+                                </Card>
+                            </Link>
                         </div>
                     ))
                 ) : (

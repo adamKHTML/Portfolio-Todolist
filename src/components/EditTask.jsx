@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from '../firebaseConfig';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Button, FormControl } from 'react-bootstrap';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const EditTask = () => {
     const { id } = useParams();
@@ -20,31 +21,43 @@ const EditTask = () => {
 
     useEffect(() => {
         const fetchTask = async () => {
-            const taskDoc = await getDoc(doc(db, 'tasks', id));
-            if (taskDoc.exists()) {
-                const taskData = taskDoc.data();
-                setName(taskData.name);
-                setDescription(taskData.description);
-                setAssignedTo(taskData.assignedTo);
-                setDeadline(new Date(taskData.deadline));
-                setTasks(taskData.tasks || []);
+            try {
+                const taskDoc = await getDoc(doc(db, 'tasks', id));
+                if (taskDoc.exists()) {
+                    const taskData = taskDoc.data();
+                    setName(taskData.name);
+                    setDescription(taskData.description);
+                    setAssignedTo(taskData.assignedTo);
+                    setDeadline(new Date(taskData.deadline));
+                    setTasks(taskData.tasks || []);
+                }
+            } catch (error) {
+                console.error('Error fetching task:', error);
             }
         };
 
         const fetchUsers = async () => {
-            const usersSnapshot = await getDocs(collection(db, 'users'));
-            setUsers(usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            try {
+                const usersSnapshot = await getDocs(collection(db, 'users'));
+                setUsers(usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
         };
 
         fetchTask();
         fetchUsers();
 
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            setCurrentUser(user);
+            if (user) {
+                setCurrentUser(user);
+            } else {
+                navigate('/login'); // Redirect to login if user is not authenticated
+            }
         });
 
         return () => unsubscribe();
-    }, [id]);
+    }, [id, navigate]);
 
     const handleAddTask = () => {
         if (currentTask.name.trim() !== '') {
@@ -79,15 +92,18 @@ const EditTask = () => {
             return;
         }
 
-        await updateDoc(doc(db, 'tasks', id), {
-            name,
-            description,
-            assignedTo,
-            deadline: deadline.toISOString(),
-            tasks
-        });
-
-        navigate('/dashboard');
+        try {
+            await updateDoc(doc(db, 'tasks', id), {
+                name,
+                description,
+                assignedTo,
+                deadline: deadline.toISOString(),
+                tasks
+            });
+            navigate('/dashboard');
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     };
 
     return (
@@ -124,7 +140,7 @@ const EditTask = () => {
                 dateFormat="Pp"
             />
 
-            {/* Liste des tâches */}
+            {/* Task list */}
             <ul>
                 {tasks.map((task, index) => (
                     <li key={index}>
