@@ -8,6 +8,7 @@ import Dashboard from './Dashboard';
 import TaskForm from './components/TaskForm';
 import EditProfile from './components/EditProfil';
 import EditTask from './components/EditTask';
+import HistoryPage from './History';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/Formulaire" element={<TaskForm />} />
         <Route path="/Edit" element={<EditProfile />} />
         <Route path="/Task/:id" element={<EditTask />} />
+        <Route path="/history" element={<HistoryPage />} />
       </Routes>
 
     </Router>

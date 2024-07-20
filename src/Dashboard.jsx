@@ -40,7 +40,11 @@ const Dashboard = () => {
             const querySnapshot = await getDocs(q);
             const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             console.log("Fetched tasks:", tasksData);
-            setTasks(tasksData);
+            // Filtrer les tâches pour exclure celles dont la date limite est passée
+            const now = new Date();
+            const filteredTasks = tasksData.filter(task => new Date(task.deadline) > now);
+
+            setTasks(filteredTasks);
         } catch (error) {
             console.error("Error fetching tasks:", error);
             setError("Failed to load tasks. Please try again later.");
@@ -67,6 +71,11 @@ const Dashboard = () => {
                 <Link to="/Edit" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <button type="button" className="btn btn-dark">
                         Modifier profil
+                    </button>
+                </Link>
+                <Link to="/history" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <button type="button" className="btn btn-dark">
+                        Historique des Tâches
                     </button>
                 </Link>
             </TopContainer>
