@@ -1,3 +1,4 @@
+// TaskForm.jsx
 import React, { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from '../firebaseConfig';
@@ -5,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Button, FormControl } from 'react-bootstrap';
+
 
 const TaskForm = () => {
     const [name, setName] = useState('');
@@ -72,6 +74,8 @@ const TaskForm = () => {
         setCurrentTask({ id: '', name: '' });
     };
 
+
+
     return (
         <form onSubmit={handleSubmit}>
             <input
@@ -105,6 +109,7 @@ const TaskForm = () => {
                 showTimeSelect
                 dateFormat="Pp"
             />
+
 
             {/* Liste des tâches */}
             <ul>

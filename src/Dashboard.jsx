@@ -5,10 +5,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
+import Message from './components/Message';
 
 const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,12 +32,21 @@ const Dashboard = () => {
     }, [navigate]);
 
     const fetchTasks = async (userId) => {
-        console.log("Fetching tasks for user:", userId);
-        const q = query(collection(db, 'tasks'), where('assignedTo', '==', userId));
-        const querySnapshot = await getDocs(q);
-        const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log("Fetched tasks:", tasksData);
-        setTasks(tasksData);
+        setLoading(true);
+        setError(null);
+        try {
+            console.log("Fetching tasks for user:", userId);
+            const q = query(collection(db, 'tasks'), where('assignedTo', '==', userId));
+            const querySnapshot = await getDocs(q);
+            const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            console.log("Fetched tasks:", tasksData);
+            setTasks(tasksData);
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+            setError("Failed to load tasks. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -54,46 +66,58 @@ const Dashboard = () => {
                 </Link>
                 <Link to="/Edit" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <button type="button" className="btn btn-dark">
-                        Modifier profile
+                        Modifier profil
                     </button>
                 </Link>
             </TopContainer>
             <ChecklistContainer>
-                {tasks.length > 0 ? (
-                    tasks.map((task) => (
-                        <div key={task.id}>
-                            <Link to={`/Task/${task.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <Card border="primary" className="task-card">
-                                    <CardHeader>{task.name}</CardHeader>
-                                    <CardBody>
-                                        <CardText>{task.description}</CardText>
-                                        <Status status={task.status}>
-                                            Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
-                                        </Status>
-                                        <Deadline>
-                                            Deadline: {new Date(task.deadline).toLocaleString()}
-                                        </Deadline>
-                                        {task.tasks && Array.isArray(task.tasks) && task.tasks.length > 0 ? (
-                                            <SubTaskList>
-                                                {task.tasks.map((subTask, index) => (
-                                                    <SubTaskItem
-                                                        key={index}
-                                                        className={`d-flex justify-content-between align-items-start ${subTask.status === 1 ? 'task-done' : ''}`}
-                                                    >
-                                                        <div className="ms-2 me-auto">
-                                                            <div className={`fw-bold ${subTask.status === 1 ? 'done-task' : ''}`}>{subTask.name}</div>
-                                                        </div>
-                                                    </SubTaskItem>
-                                                ))}
-                                            </SubTaskList>
-                                        ) : (
-                                            <p>No sub-tasks available for this task.</p>
-                                        )}
-                                    </CardBody>
-                                </Card>
-                            </Link>
-                        </div>
-                    ))
+                {loading ? (
+                    <p>Loading tasks...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : tasks.length > 0 ? (
+                    tasks.map((task) => {
+                        const deadlineDate = new Date(task.deadline);
+                        const daysRemaining = Math.ceil((deadlineDate - new Date()) / (1000 * 60 * 60 * 24));
+                        const showMessage = task.status !== 2;
+                        console.log(`Task ID: ${task.id}, Days Remaining: ${daysRemaining}, Show Message: ${showMessage}`); // Debugging line
+
+                        return (
+                            <div key={task.id}>
+                                <Link to={`/Task/${task.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <Card border="primary" className="task-card">
+                                        <CardHeader>{task.name}</CardHeader>
+                                        <CardBody>
+                                            <CardText>{task.description}</CardText>
+                                            <Status status={task.status}>
+                                                Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
+                                            </Status>
+                                            <Deadline>
+                                                Deadline: {deadlineDate.toLocaleString()}
+                                                <Message daysRemaining={daysRemaining} visible={showMessage} />
+                                            </Deadline>
+                                            {task.tasks && Array.isArray(task.tasks) && task.tasks.length > 0 ? (
+                                                <SubTaskList>
+                                                    {task.tasks.map((subTask, index) => (
+                                                        <SubTaskItem
+                                                            key={index}
+                                                            statut={subTask.statut}
+                                                        >
+                                                            <div className="ms-2 me-auto">
+                                                                <div className={`fw-bold ${subTask.statut === 1 ? 'done-task' : ''}`}>{subTask.name}</div>
+                                                            </div>
+                                                        </SubTaskItem>
+                                                    ))}
+                                                </SubTaskList>
+                                            ) : (
+                                                <p>No sub-tasks available for this task.</p>
+                                            )}
+                                        </CardBody>
+                                    </Card>
+                                </Link>
+                            </div>
+                        );
+                    })
                 ) : (
                     <p>No tasks available.</p>
                 )}
@@ -101,6 +125,7 @@ const Dashboard = () => {
         </GlobalStyles>
     );
 };
+
 
 const GlobalStyles = styled.div`
     font-size: 100%;
@@ -214,7 +239,7 @@ const SubTaskList = styled.ul`
 `;
 
 const SubTaskItem = styled.li`
-    background-color: ${props => (props.status === 1 ? '#4caf50' : '#f0f0f0')};
+    background-color: ${props => (props.statut === 1 ? '#4caf50' : '#f0f0f0')};
     margin: 5px 0;
     padding: 5px;
     border-radius: 4px;

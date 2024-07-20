@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Button, FormControl } from 'react-bootstrap';
 import { onAuthStateChanged } from 'firebase/auth';
+import styled from 'styled-components';
 
 const EditTask = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const EditTask = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [currentTask, setCurrentTask] = useState({ id: '', name: '', statut: 0 });
+    const [status, setStatus] = useState(0);
 
     useEffect(() => {
         const fetchTask = async () => {
@@ -30,6 +32,7 @@ const EditTask = () => {
                     setAssignedTo(taskData.assignedTo);
                     setDeadline(new Date(taskData.deadline));
                     setTasks(taskData.tasks || []);
+                    setStatus(taskData.status || 0);
                 }
             } catch (error) {
                 console.error('Error fetching task:', error);
@@ -83,6 +86,19 @@ const EditTask = () => {
             return task;
         });
         setTasks(updatedTasks);
+        const newStatus = updateTaskStatus(updatedTasks);
+        setStatus(newStatus);
+    };
+
+    const updateTaskStatus = (updatedTasks) => {
+        const completedTasks = updatedTasks.filter(task => task.statut === 1).length;
+        const newStatus = completedTasks === 0 ? 0 : (completedTasks === updatedTasks.length ? 2 : 1);
+        try {
+            updateDoc(doc(db, 'tasks', id), { status: newStatus });
+        } catch (error) {
+            console.error('Error updating task status:', error);
+        }
+        return newStatus;
     };
 
     const handleSubmit = async (e) => {
@@ -98,7 +114,8 @@ const EditTask = () => {
                 description,
                 assignedTo,
                 deadline: deadline.toISOString(),
-                tasks
+                tasks,
+                status
             });
             navigate('/dashboard');
         } catch (error) {
@@ -108,6 +125,9 @@ const EditTask = () => {
 
     return (
         <form onSubmit={handleSubmit}>
+            <Status status={status}>
+                Status: {status === 0 ? 'To do' : status === 1 ? 'In progress' : 'Completed'}
+            </Status>
             <input
                 type="text"
                 placeholder="Task Name"
@@ -115,6 +135,7 @@ const EditTask = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
             />
+
             <textarea
                 placeholder="Description"
                 value={description}
@@ -143,7 +164,7 @@ const EditTask = () => {
             {/* Task list */}
             <ul>
                 {tasks.map((task, index) => (
-                    <li key={index}>
+                    <TaskItem key={index} statut={task.statut}>
                         {currentTask.id === task.id ? (
                             <FormControl
                                 type="text"
@@ -177,7 +198,7 @@ const EditTask = () => {
                                 </Button>
                             )}
                         </div>
-                    </li>
+                    </TaskItem>
                 ))}
             </ul>
             <div>
@@ -198,5 +219,25 @@ const EditTask = () => {
         </form>
     );
 };
+
+const Status = styled.div`
+    margin: 0 0 10px;
+    color: ${props => (props.status === 0 ? 'red' : props.status === 1 ? 'orange' : 'green')};
+`;
+
+const TaskItem = styled.li`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: ${props => (props.statut === 1 ? '#4caf50' : '#f0f0f0')};
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 4px;
+
+    span {
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+`;
 
 export default EditTask;
