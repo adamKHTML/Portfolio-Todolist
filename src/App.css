@@ -13,6 +13,7 @@ body {
   font-weight: 600;
   font-style: normal;
   background-color: #cdd5eb;
+  overflow-x: hidden;
 }
 .logo {
   height: 6em;

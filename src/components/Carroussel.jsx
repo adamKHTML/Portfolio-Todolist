@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
+
 // Slide component
 const Slide = ({ slide, current }) => {
     const { index, title, description } = slide;
