@@ -12,9 +12,11 @@ body {
   font-family: "Cairo", sans-serif;
   font-weight: 600;
   font-style: normal;
-  background-color: #cdd5eb;
+  background: linear-gradient(to right, #cdd5eb 0%, #f8f9fd 50%, #cdd5eb 100%);
   overflow-x: hidden;
 }
+
+
 .logo {
   height: 6em;
   padding: 1.5em;

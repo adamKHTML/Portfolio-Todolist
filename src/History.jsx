@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import NavBar from './components/Navbar';
+
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -71,7 +71,7 @@ const HistoryPage = () => {
 
     return (
         <GlobalStyles>
-            <NavBar />
+
             <PageContainer>
                 <h2>Historique des Tâches</h2>
                 {loading ? (

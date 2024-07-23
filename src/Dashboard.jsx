@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import NavBar from './components/Navbar';
+import { createGlobalStyle, styled } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Message from './components/Message';
+import 'primeicons/primeicons.css';
+
 
 const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
@@ -31,6 +32,17 @@ const Dashboard = () => {
         return () => unsubscribe();
     }, [navigate]);
 
+    const handleLogout = () => {
+        FIREBASE_AUTH.signOut()
+            .then(() => {
+                navigate('/');
+                console.log('Déconnexion réussie');
+            })
+            .catch((error) => {
+                console.error('Erreur lors de la déconnexion:', error);
+            });
+    };
+
     const fetchTasks = async (userId) => {
         setLoading(true);
         setError(null);
@@ -54,145 +66,104 @@ const Dashboard = () => {
     };
 
     return (
-        <GlobalStyles>
-            <NavBar />
-            <Headreview>
-                <div className="col-title banner-info-bg">
-                    <h5>Bienvenue, {currentUser ? currentUser.email : 'Cher utilisateur'}</h5>
-                    <img src="/images/Checklist.png" alt="Dev Logo SVG" className="img-fluid radius-image-curve" />
-                </div>
-            </Headreview>
-            <TopContainer>
-                <Link to="/Formulaire" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <button type="button" className="btn btn-dark">
-                        Créer une tâche
-                    </button>
-                </Link>
-                <Link to="/Edit" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <button type="button" className="btn btn-dark">
+        <>
+            <GlobalStyle />
+            <Sidebar>
+                <SidebarLink to="/Edit">
+                    <SidebarBrand>
+                        <i className="pi pi-user-edit" style={{ color: '#708090' }}></i>
                         Modifier profil
-                    </button>
-                </Link>
-                <Link to="/history" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <button type="button" className="btn btn-dark">
+                    </SidebarBrand>
+                </SidebarLink>
+                <SidebarLink to="/Formulaire">
+                    <SidebarBrand>
+                        <i className="pi pi-pencil" style={{ color: '#708090' }}></i>
+                        Créer une tâche
+                    </SidebarBrand>
+                </SidebarLink>
+                <SidebarLink to="/history">
+                    <SidebarBrand>
+                        <i className="pi pi-history" style={{ color: '#708090' }}></i>
                         Historique des Tâches
-                    </button>
-                </Link>
-            </TopContainer>
-            <ChecklistContainer>
-                {loading ? (
-                    <p>Loading tasks...</p>
-                ) : error ? (
-                    <p>{error}</p>
-                ) : tasks.length > 0 ? (
-                    tasks.map((task) => {
-                        const deadlineDate = new Date(task.deadline);
-                        const daysRemaining = Math.ceil((deadlineDate - new Date()) / (1000 * 60 * 60 * 24));
-                        const showMessage = task.status !== 2;
-                        console.log(`Task ID: ${task.id}, Days Remaining: ${daysRemaining}, Show Message: ${showMessage}`); // Debugging line
+                    </SidebarBrand>
+                </SidebarLink>
+                <SidebarLink to="/#">
+                    <SidebarBrand>
+                        <i className="pi pi-comments" style={{ color: '#708090' }}></i>
+                        Discussions / Chats
+                    </SidebarBrand>
+                </SidebarLink>
+                <Logout onClick={handleLogout} className="logout-button">Logout</Logout>
+            </Sidebar>
 
-                        return (
-                            <div key={task.id}>
-                                <Link to={`/Task/${task.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <Card border="primary" className="task-card">
-                                        <CardHeader>{task.name}</CardHeader>
-                                        <CardBody>
-                                            <CardText>{task.description}</CardText>
-                                            <Status status={task.status}>
-                                                Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
-                                            </Status>
-                                            <Deadline>
-                                                Deadline: {deadlineDate.toLocaleString()}
-                                                <Message daysRemaining={daysRemaining} visible={showMessage} />
-                                            </Deadline>
-                                            {task.tasks && Array.isArray(task.tasks) && task.tasks.length > 0 ? (
-                                                <SubTaskList>
-                                                    {task.tasks.map((subTask, index) => (
-                                                        <SubTaskItem
-                                                            key={index}
-                                                            statut={subTask.statut}
-                                                        >
-                                                            <div className="ms-2 me-auto">
-                                                                <div className={`fw-bold ${subTask.statut === 1 ? 'done-task' : ''}`}>{subTask.name}</div>
-                                                            </div>
-                                                        </SubTaskItem>
-                                                    ))}
-                                                </SubTaskList>
-                                            ) : (
-                                                <p>No sub-tasks available for this task.</p>
-                                            )}
-                                        </CardBody>
-                                    </Card>
-                                </Link>
-                            </div>
-                        );
-                    })
-                ) : (
-                    <p>No tasks available.</p>
-                )}
-            </ChecklistContainer>
-        </GlobalStyles>
+            <MainSection>
+                <Title>
+                    <h2>Bienvenue, {currentUser ? currentUser.email : 'Cher utilisateur'}</h2>
+                </Title>
+
+                <ChecklistContainer>
+                    {loading ? (
+                        <p>Loading tasks...</p>
+                    ) : error ? (
+                        <p>{error}</p>
+                    ) : tasks.length > 0 ? (
+                        tasks.map((task) => {
+                            const deadlineDate = new Date(task.deadline);
+                            const daysRemaining = Math.ceil((deadlineDate - new Date()) / (1000 * 60 * 60 * 24));
+                            const showMessage = task.status !== 2;
+                            console.log(`Task ID: ${task.id}, Days Remaining: ${daysRemaining}, Show Message: ${showMessage}`); // Debugging line
+
+                            return (
+                                <div key={task.id}>
+                                    <Link to={`/Task/${task.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <Card border="primary" className="task-card">
+                                            <CardHeader>{task.name}</CardHeader>
+                                            <CardBody>
+                                                <CardText>{task.description}</CardText>
+                                                <Status status={task.status}>
+                                                    Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
+                                                </Status>
+                                                <Deadline>
+                                                    Deadline: {deadlineDate.toLocaleString()}
+                                                    <Message daysRemaining={daysRemaining} visible={showMessage} />
+                                                </Deadline>
+                                                {task.tasks && Array.isArray(task.tasks) && task.tasks.length > 0 ? (
+                                                    <SubTaskList>
+                                                        {task.tasks.map((subTask, index) => (
+                                                            <SubTaskItem
+                                                                key={index}
+                                                                statut={subTask.statut}
+                                                            >
+                                                                <div className="ms-2 me-auto">
+                                                                    <div className={`fw-bold ${subTask.statut === 1 ? 'done-task' : ''}`}>{subTask.name}</div>
+                                                                </div>
+                                                            </SubTaskItem>
+                                                        ))}
+                                                    </SubTaskList>
+                                                ) : (
+                                                    <p>No sub-tasks available for this task.</p>
+                                                )}
+                                            </CardBody>
+                                        </Card>
+                                    </Link>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <p>No tasks available.</p>
+                    )}
+                </ChecklistContainer>
+            </MainSection>
+
+        </>
     );
 };
 
 
-const GlobalStyles = styled.div`
-    font-size: 100%;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
-`;
 
-const Headreview = styled.div`
-    min-height: calc(100vh - 20px);
-    position: relative;
-    z-index: 0;
-    display: grid;
-    align-items: center;
-    padding: 3em 0;
-    background: #614da7;
-    justify-items: center;
-    width: 100%;
-    margin: 0;
-
-    .col-title {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
-
-        h5 {
-            color: #fff;
-            font-size: 52px;
-            line-height: 1.1;
-            font-weight: 400;
-            margin-right: 20px;
-        }
-
-        .img-fluid {
-            max-width: 100%;
-            height: auto;
-            margin-left: auto;
-            margin-right: auto;
-            width: 200px;
-        }
-    }
-`;
-
-const TopContainer = styled.div`
-    display: flex;
-    flex-direction: row-reverse;
-
-    .btn-dark {
-        margin: 2.35em 8em 0 5.60em;
-        height: 59px;
-        width: 179px;
-    }
-
-    .btn-dark:hover {
-        background-color: #ffd166;
+const GlobalStyle = createGlobalStyle`
+    #root {
+        margin: 0 0 310px 0;
     }
 `;
 
@@ -208,24 +179,28 @@ const ChecklistContainer = styled.div`
 `;
 
 const Card = styled.div`
-    border: 1px solid #007bff;
-    border-radius: 0.25rem;
+    
+    border-radius: 0.45rem;
     margin: 10px;
     width: 18rem;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 `;
 
 const CardHeader = styled.div`
-    background-color: #007bff;
+    background-color: #9895e1;
     color: white;
     padding: 10px;
-    border-bottom: 1px solid #007bff;
-    border-top-left-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
+    margin-bottom: 10px;
+   border-radius: 0.55rem;
+
+   
 `;
 
 const CardBody = styled.div`
     padding: 10px;
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 0.75rem;
 `;
 
 const CardText = styled.p`
@@ -256,6 +231,72 @@ const SubTaskItem = styled.li`
     .done-task {
         color: #fff;
     }
+`;
+
+const Logout = styled.div`
+    color: black;
+    border: none;
+    cursor: pointer;
+`;
+
+const Sidebar = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #cdd5eb;
+    overflow-y: auto;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    padding: 20px;
+    box-sizing: border-box;
+`;
+
+const SidebarLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #211d31;
+        
+    }
+
+    i {
+        margin-right: 10px;
+    }
+`;
+
+const SidebarBrand = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    color: #708090;
+    &:hover {
+        color: white;
+        
+    }
+
+
+`;
+
+const Title = styled.div`
+    color: #282e51;
+`;
+
+const MainSection = styled.div`
+    position: relative;
+    margin-left: 270px;
+    margin-bottom: 90px;
+    padding: 20px;
+    
+
 `;
 
 export default Dashboard;
