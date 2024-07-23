@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import BackgroundImg from '/img/BackgroundImg.jpeg';
 import Carrousel from './components/Carroussel';
+import HomeNav from './components/HomeNav';
 
 const Homepage = () => {
     return (
         <>
             <Header>
+                <HomeNav />
                 <HeaderContent>
                     <h1>Pronote</h1>
                     <p>Gérez vos tâches, suivez vos progrès</p>
