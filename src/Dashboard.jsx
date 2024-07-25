@@ -120,9 +120,9 @@ const Dashboard = () => {
                                             <CardHeader>{task.name}</CardHeader>
                                             <CardBody>
                                                 <CardText>{task.description}</CardText>
-                                                <Status status={task.status}>
+                                                <StatusTextSpan status={task.status}>
                                                     Status: {task.status === 0 ? 'To do' : task.status === 1 ? 'In progress' : 'Completed'}
-                                                </Status>
+                                                </StatusTextSpan>
                                                 <Deadline>
                                                     Deadline: {deadlineDate.toLocaleString()}
                                                     <Message daysRemaining={daysRemaining} visible={showMessage} />
@@ -197,20 +197,18 @@ const CardHeader = styled.div`
 `;
 
 const CardBody = styled.div`
-    padding: 10px;
+    padding: 20px;
     margin-top: 20px;
     background: #fff;
     border-radius: 0.75rem;
+    
 `;
 
 const CardText = styled.p`
     margin: 0 0 10px;
 `;
 
-const Status = styled.div`
-    margin: 0 0 10px;
-    color: ${props => (props.status === 0 ? 'red' : props.status === 1 ? 'orange' : 'green')};
-`;
+
 
 const Deadline = styled.div`
     margin: 0;
@@ -297,6 +295,38 @@ const MainSection = styled.div`
     padding: 20px;
     
 
+`;
+
+
+
+const StatusTextSpan = styled.span`
+    ${(props) => {
+        switch (props.status) {
+            case 0:
+                return `
+                    background-color: #f0f0f0;
+                    color: #888383;
+                    border-radius: 18px;
+                `;
+            case 1:
+                return `
+                    background-color: #ffd166;
+                    color: #664c10;
+                    border-radius: 18px;
+                `;
+            case 2:
+                return `
+                    background-color: #8FED8F;
+                    color: #314031;
+                    border-radius: 18px;
+                `;
+            default:
+                return '';
+        }
+    }};
+    font-size: 16px;
+    padding: 6px;
+   
 `;
 
 export default Dashboard;

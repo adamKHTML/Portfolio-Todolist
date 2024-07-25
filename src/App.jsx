@@ -9,6 +9,7 @@ import TaskForm from './components/TaskForm';
 import EditProfile from './components/EditProfil';
 import EditTask from './components/EditTask';
 import HistoryPage from './History';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 

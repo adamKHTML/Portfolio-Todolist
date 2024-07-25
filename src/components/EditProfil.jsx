@@ -67,7 +67,7 @@ const EditProfile = () => {
                 <DashNav />
             </FixedNav>
             <h2>Modifier le Profil</h2>
-            <StyledForm onSubmit={handleSubmit} >
+            <StyledForm  >
                 <StyledInput
                     type='text'
                     name='firstName'
@@ -100,7 +100,7 @@ const EditProfile = () => {
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
-                    <StyledButton type='submit'>Mettre à jour</StyledButton>
+                    <StyledButton type='submit' onClick={handleSubmit}>Mettre à jour</StyledButton>
                 )}
 
             </StyledForm>

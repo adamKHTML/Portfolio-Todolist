@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -76,13 +75,15 @@ const HistoryPage = () => {
                 <DashNav />
             </FixedNav>
             <PageContainer>
+
                 <h2>Historique des Tâches</h2>
+
                 {loading ? (
                     <p>Loading tasks...</p>
                 ) : error ? (
                     <p>{error}</p>
                 ) : (
-                    <>
+                    <CategoryWrapper>
                         <CategorySection>
                             <h3>Non Fait</h3>
                             <TaskTable tasks={notDone} />
@@ -99,7 +100,7 @@ const HistoryPage = () => {
                             <h3>Non Réalisé à Temps</h3>
                             <TaskTable tasks={failedToDo} />
                         </CategorySection>
-                    </>
+                    </CategoryWrapper>
                 )}
             </PageContainer>
         </GlobalStyles>
@@ -108,43 +109,38 @@ const HistoryPage = () => {
 
 const TaskTable = ({ tasks }) => (
     <Table>
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Sous-tâches</th>
-                <th>Date Limite</th>
-            </tr>
-        </thead>
-        <tbody>
+        <TableHeader>
+            <div>Nom</div>
+            <div>Sous-tâches</div>
+            <div>Date Limite</div>
+        </TableHeader>
+        <TableBody>
             {tasks.length > 0 ? (
                 tasks.map(task => (
-                    <tr key={task.id}>
-                        <td>{task.name}</td>
-                        <td>
+                    <TableRow key={task.id}>
+                        <div>{task.name}</div>
+                        <div>
                             {task.tasks && task.tasks.length > 0 ? (
-                                <ul>
+                                <SubTaskList>
                                     {task.tasks.map((subTask, index) => (
                                         <li key={index}>{subTask.name}</li>
                                     ))}
-                                </ul>
+                                </SubTaskList>
                             ) : (
                                 <p>Aucune sous-tâche disponible</p>
                             )}
-                        </td>
-                        <td>{new Date(task.deadline).toLocaleDateString()}</td>
-                    </tr>
+                        </div>
+                        <div>{new Date(task.deadline).toLocaleDateString()}</div>
+                    </TableRow>
                 ))
             ) : (
-                <tr>
-                    <td colSpan="3">Aucune tâche disponible.</td>
-                </tr>
+                <TableRow>
+                    <div colSpan="3">Aucune tâche disponible.</div>
+                </TableRow>
             )}
-        </tbody>
+        </TableBody>
     </Table>
 );
-
-
-
 
 const GlobalStyles = styled.div`
     font-size: 100%;
@@ -154,7 +150,10 @@ const GlobalStyles = styled.div`
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
+    display: flex;
+    align-items: center;
 `;
+
 
 const FixedNav = styled.div`
     position: fixed;
@@ -162,7 +161,6 @@ const FixedNav = styled.div`
     left: 115px;
     width: 100%;
     z-index: 10;
-   
 `;
 
 const PageContainer = styled.div`
@@ -171,38 +169,90 @@ const PageContainer = styled.div`
     margin: 0 auto;
 
     h2 {
-        margin-bottom: 1.5rem;
+        font-size: 26px;
+        margin: 20px 0;
+        text-align: center;
+        color: #282e51;
     }
+`;
+
+const CategoryWrapper = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 100%; /* Ensure the wrapper doesn't exceed the container width */
 `;
 
 const CategorySection = styled.div`
+    flex: 1 1 250px; /* Flex grow, shrink, and basis */
+    max-width: 100%; /* Ensure sections don't exceed the wrapper's width */
     margin-bottom: 2rem;
+    
+    h3 {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 18px;
+        color: #282e51;
+
+    }
 `;
 
-const Table = styled.table`
+const Table = styled.div`
     width: 100%;
-    border-collapse: collapse;
+    display: flex;
+    flex-direction: column;
+    max-width: 1280px; /* Set maximum width for tables */
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
+`;
 
-    tr {
-        border-radius: 0.55rem !important
-    }
-    td {
-        background: white;
-        border-radius: 0.75em;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #9895e1;
+const TableHeader = styled.div`
+    display: flex;
+    background-color: #6020f0;
     color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     padding: 10px;
     margin-bottom: 10px;
-   
+
+    div {
+        flex: 1;
+        padding: 0 10px;
+    }
+`;
+
+const TableBody = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
+const TableRow = styled.div`
+    display: flex;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #f0f0f0;
     }
 
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
+    div {
+        flex: 1;
+        padding: 0 10px;
+    }
+`;
+
+const SubTaskList = styled.ul`
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        padding: 5px 0;
     }
 `;
 

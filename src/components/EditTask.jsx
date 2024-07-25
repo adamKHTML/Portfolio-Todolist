@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore'
 import { db, FIREBASE_AUTH } from '../firebaseConfig';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Button, FormControl } from 'react-bootstrap';
+import { Button, FormControl, Form, InputGroup, FormSelect } from 'react-bootstrap';
 import { onAuthStateChanged } from 'firebase/auth';
 import styled from 'styled-components';
 import DashNav from './DashNav';
@@ -71,9 +71,6 @@ const EditTask = () => {
         }
     };
 
-    const handleDeleteTask = (taskId) => {
-        setTasks(tasks.filter(task => task.id !== taskId));
-    };
 
     const handleSaveTask = () => {
         setTasks(tasks.map(task => task.id === currentTask.id ? currentTask : task));
@@ -131,10 +128,11 @@ const EditTask = () => {
             <FixedNav>
                 <DashNav />
             </FixedNav>
-            <StyledForm onSubmit={handleSubmit}>
-                <Status status={status}>
+            <StyledForm >
+                <StatusTextSpan status={status}>
                     Status: {status === 0 ? 'To do' : status === 1 ? 'In progress' : 'Completed'}
-                </Status>
+                </StatusTextSpan>
+
                 <StyledInput
                     type="text"
                     placeholder="Task Name"
@@ -142,14 +140,20 @@ const EditTask = () => {
                     onChange={(e) => setName(e.target.value)}
                     required
                 />
-
-                <textarea
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-                <select
+                <Form>
+                    <InputGroup>
+                        <Form.Control
+                            as="textarea"
+                            aria-label="With textarea"
+                            placeholder="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                        />
+                    </InputGroup>
+                </Form>
+                <FormSelect
+                    aria-label="Default select example"
                     value={assignedTo}
                     onChange={(e) => setAssignedTo(e.target.value)}
                     required
@@ -160,7 +164,7 @@ const EditTask = () => {
                             {user.firstName} {user.lastName}
                         </option>
                     ))}
-                </select>
+                </FormSelect>
                 <DatePicker
                     selected={deadline}
                     onChange={(date) => setDeadline(date)}
@@ -189,9 +193,7 @@ const EditTask = () => {
                                 onChange={() => handleCheckboxChange(task.id)}
                             />
                             <div>
-                                <Button variant="danger" onClick={() => handleDeleteTask(task.id)}>
-                                    Delete
-                                </Button>
+
                                 {currentTask.id === task.id ? (
                                     <Button variant="success" onClick={handleSaveTask}>
                                         Save
@@ -222,7 +224,7 @@ const EditTask = () => {
                     </Button>
                 </div>
 
-                <StyledButton type="submit">Update Task</StyledButton>
+                <StyledButton type="submit" onClick={handleSubmit}>Update Task</StyledButton>
             </StyledForm>
 
         </>
@@ -239,9 +241,35 @@ const FixedNav = styled.div`
    
 `;
 
-const Status = styled.div`
-    margin: 0 0 10px;
-    color: ${props => (props.status === 0 ? 'red' : props.status === 1 ? 'orange' : 'green')};
+
+const StatusTextSpan = styled.span`
+    ${(props) => {
+        switch (props.status) {
+            case 0:
+                return `
+                    background-color: #f0f0f0;
+                    color: #888383;
+                    border-radius: 18px;
+                `;
+            case 1:
+                return `
+                    background-color: #ffd166;
+                    color: #664c10;
+                    border-radius: 18px;
+                `;
+            case 2:
+                return `
+                    background-color: #8FED8F;
+                    color: #314031;
+                    border-radius: 18px;
+                `;
+            default:
+                return '';
+        }
+    }};
+    font-size: 16px;
+    padding: 6px;
+   
 `;
 
 const TaskItem = styled.li`
@@ -249,9 +277,17 @@ const TaskItem = styled.li`
     align-items: center;
     justify-content: space-between;
     background-color: ${props => (props.statut === 1 ? '#4caf50' : '#f0f0f0')};
-    margin: 5px 0;
+      
+    gap: 10px;
     padding: 5px;
     border-radius: 4px;
+    
+        border-radius: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        
+        gap: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 
     span {
         flex-grow: 1;
@@ -270,7 +306,8 @@ const StyledForm = styled.div`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 2px solid #201d30;
     position: relative;
-    margin: 170px;
+    margin: 170px auto;
+
 
 
     h2 {
@@ -302,6 +339,14 @@ const StyledForm = styled.div`
         top: auto;
         bottom: 0;
     }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    
+
 `;
 
 const StyledInput = styled.input`
@@ -344,5 +389,8 @@ const StyledButton = styled.button`
         background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
     }
 `;
+
+
+
 
 export default EditTask;

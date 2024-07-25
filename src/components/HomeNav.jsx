@@ -8,42 +8,42 @@ import { Navbar, Container } from 'react-bootstrap';
 //Il s'agit de la navbar - Header de mes pages 
 
 const HomeNav = () => {
-    const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 0) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
-        };
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
 
-        window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
 
-    }, []);
+  }, []);
 
-    return (
+  return (
 
-        <CustomNavbar scrolled={scrolled ? 'true' : undefined} expand="lg" fixed="top">
-            <CustomContainer>
-                <CustomNavbarBrand scrolled={scrolled ? 'true' : undefined}>
-                    {scrolled ? (
-                        <Link to="/">Home</Link>
-                    ) : (
-                        <Link to="/"><span>Home</span></Link>
-                    )}
-                </CustomNavbarBrand>
-                <CustomLogo src="#" alt="Dev Logo SVG" />
+    <CustomNavbar scrolled={scrolled ? 'true' : undefined} expand="lg" fixed="top">
+      <CustomContainer>
+        <CustomNavbarBrand scrolled={scrolled ? 'true' : undefined}>
+          {scrolled ? (
+            <Link to="/">Home</Link>
+          ) : (
+            <Link to="/"><span>Home</span></Link>
+          )}
+        </CustomNavbarBrand>
+        <CustomLogo src="#" alt="Dev Logo SVG" />
 
-            </CustomContainer>
-        </CustomNavbar>
+      </CustomContainer>
+    </CustomNavbar>
 
-    );
+  );
 
 };
 
