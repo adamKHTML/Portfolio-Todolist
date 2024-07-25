@@ -7,6 +7,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Button, FormControl } from 'react-bootstrap';
 import { onAuthStateChanged } from 'firebase/auth';
 import styled from 'styled-components';
+import DashNav from './DashNav';
+
 
 const EditTask = () => {
     const { id } = useParams();
@@ -124,101 +126,118 @@ const EditTask = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Status status={status}>
-                Status: {status === 0 ? 'To do' : status === 1 ? 'In progress' : 'Completed'}
-            </Status>
-            <input
-                type="text"
-                placeholder="Task Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-            />
 
-            <textarea
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-            />
-            <select
-                value={assignedTo}
-                onChange={(e) => setAssignedTo(e.target.value)}
-                required
-            >
-                <option value="">Select a user</option>
-                {users.map(user => (
-                    <option key={user.id} value={user.id}>
-                        {user.firstName} {user.lastName}
-                    </option>
-                ))}
-            </select>
-            <DatePicker
-                selected={deadline}
-                onChange={(date) => setDeadline(date)}
-                showTimeSelect
-                dateFormat="Pp"
-            />
-
-            {/* Task list */}
-            <ul>
-                {tasks.map((task, index) => (
-                    <TaskItem key={index} statut={task.statut}>
-                        {currentTask.id === task.id ? (
-                            <FormControl
-                                type="text"
-                                value={currentTask.name}
-                                onChange={(e) =>
-                                    setCurrentTask({ ...currentTask, name: e.target.value })
-                                }
-                            />
-                        ) : (
-                            <span>{task.name}</span>
-                        )}
-                        <input
-                            type="checkbox"
-                            checked={task.statut === 1}
-                            onChange={() => handleCheckboxChange(task.id)}
-                        />
-                        <div>
-                            <Button variant="danger" onClick={() => handleDeleteTask(task.id)}>
-                                Delete
-                            </Button>
-                            {currentTask.id === task.id ? (
-                                <Button variant="success" onClick={handleSaveTask}>
-                                    Save
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="secondary"
-                                    onClick={() => setCurrentTask(task)}
-                                >
-                                    Edit
-                                </Button>
-                            )}
-                        </div>
-                    </TaskItem>
-                ))}
-            </ul>
-            <div>
-                <FormControl
+        <>
+            <FixedNav>
+                <DashNav />
+            </FixedNav>
+            <StyledForm onSubmit={handleSubmit}>
+                <Status status={status}>
+                    Status: {status === 0 ? 'To do' : status === 1 ? 'In progress' : 'Completed'}
+                </Status>
+                <StyledInput
                     type="text"
-                    placeholder="New Task"
-                    value={currentTask.name}
-                    onChange={(e) =>
-                        setCurrentTask({ id: currentTask.id || Date.now().toString(), name: e.target.value, statut: 0 })
-                    }
+                    placeholder="Task Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
                 />
-                <Button variant="primary" onClick={handleAddTask}>
-                    Add Task
-                </Button>
-            </div>
 
-            <button type="submit">Update Task</button>
-        </form>
+                <textarea
+                    placeholder="Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                />
+                <select
+                    value={assignedTo}
+                    onChange={(e) => setAssignedTo(e.target.value)}
+                    required
+                >
+                    <option value="">Select a user</option>
+                    {users.map(user => (
+                        <option key={user.id} value={user.id}>
+                            {user.firstName} {user.lastName}
+                        </option>
+                    ))}
+                </select>
+                <DatePicker
+                    selected={deadline}
+                    onChange={(date) => setDeadline(date)}
+                    showTimeSelect
+                    dateFormat="Pp"
+                />
+
+                {/* Task list */}
+                <ul>
+                    {tasks.map((task, index) => (
+                        <TaskItem key={index} statut={task.statut}>
+                            {currentTask.id === task.id ? (
+                                <FormControl
+                                    type="text"
+                                    value={currentTask.name}
+                                    onChange={(e) =>
+                                        setCurrentTask({ ...currentTask, name: e.target.value })
+                                    }
+                                />
+                            ) : (
+                                <span>{task.name}</span>
+                            )}
+                            <input
+                                type="checkbox"
+                                checked={task.statut === 1}
+                                onChange={() => handleCheckboxChange(task.id)}
+                            />
+                            <div>
+                                <Button variant="danger" onClick={() => handleDeleteTask(task.id)}>
+                                    Delete
+                                </Button>
+                                {currentTask.id === task.id ? (
+                                    <Button variant="success" onClick={handleSaveTask}>
+                                        Save
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setCurrentTask(task)}
+                                    >
+                                        Edit
+                                    </Button>
+                                )}
+                            </div>
+                        </TaskItem>
+                    ))}
+                </ul>
+                <div>
+                    <FormControl
+                        type="text"
+                        placeholder="New Task"
+                        value={currentTask.name}
+                        onChange={(e) =>
+                            setCurrentTask({ id: currentTask.id || Date.now().toString(), name: e.target.value, statut: 0 })
+                        }
+                    />
+                    <Button variant="primary" onClick={handleAddTask}>
+                        Add Task
+                    </Button>
+                </div>
+
+                <StyledButton type="submit">Update Task</StyledButton>
+            </StyledForm>
+
+        </>
     );
 };
+
+
+const FixedNav = styled.div`
+    position: fixed;
+    top: 35px;
+    left: 115px;
+    width: 100%;
+    z-index: 10;
+   
+`;
 
 const Status = styled.div`
     margin: 0 0 10px;
@@ -237,6 +256,92 @@ const TaskItem = styled.li`
     span {
         flex-grow: 1;
         margin-right: 10px;
+    }
+`;
+
+
+const StyledForm = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 60px 40px 40px 40px ;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #201d30;
+    position: relative;
+    margin: 170px;
+
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    a {
+        margin-top: 15px;
+        color: #4b548a;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 20px;
+        right: 20px;
+        height: 2px;
+        background: #201d30;
+    }
+
+    &::after {
+        top: auto;
+        bottom: 0;
+    }
+`;
+
+const StyledInput = styled.input`
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    box-sizing: border-box;
+    font-size: 1rem;
+    
+
+    &:focus {
+        border-color: #4b548a;
+        outline: none;
+    }
+
+    &::placeholder {
+        color: #bbb;
+    }
+
+   
+`;
+
+const StyledButton = styled.button`
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background: #4b548a;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+    margin: 10px 0;
+
+    &:hover {
+        transform: scale(1.05);
+        background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
     }
 `;
 

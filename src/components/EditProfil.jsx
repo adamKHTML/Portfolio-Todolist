@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, FIREBASE_AUTH } from '../firebaseConfig';
+import styled from 'styled-components';
+import DashNav from './DashNav';
 
 const EditProfile = () => {
     const [userData, setUserData] = useState({
@@ -59,31 +61,35 @@ const EditProfile = () => {
     };
 
     return (
-        <div style={styles.container}>
+
+        <>
+            <FixedNav>
+                <DashNav />
+            </FixedNav>
             <h2>Modifier le Profil</h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
+            <StyledForm onSubmit={handleSubmit} >
+                <StyledInput
                     type='text'
                     name='firstName'
                     placeholder='Prénom'
                     value={userData.firstName}
                     onChange={handleChange}
                 />
-                <input
+                <StyledInput
                     type='text'
                     name='lastName'
                     placeholder='Nom'
                     value={userData.lastName}
                     onChange={handleChange}
                 />
-                <input
+                <StyledInput
                     type='text'
                     name='job'
                     placeholder='Job'
                     value={userData.job}
                     onChange={handleChange}
                 />
-                <input
+                <StyledInput
                     type='email'
                     name='email'
                     placeholder='Email'
@@ -94,26 +100,108 @@ const EditProfile = () => {
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
-                    <button type='submit'>Mettre à jour</button>
+                    <StyledButton type='submit'>Mettre à jour</StyledButton>
                 )}
-            </form>
-        </div>
+
+            </StyledForm>
+        </>
     );
 };
 
-const styles = {
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '300px',
+
+const FixedNav = styled.div`
+    position: fixed;
+    top: 35px;
+    left: 115px;
+    width: 100%;
+    z-index: 10;
+   
+`;
+
+
+const StyledForm = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 60px 40px 40px 40px ;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #201d30;
+    position: relative;
+    margin: 170px;
+
+
+    h2 {
+        margin-bottom: 20px;
     }
-};
+
+    a {
+        margin-top: 15px;
+        color: #4b548a;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 20px;
+        right: 20px;
+        height: 2px;
+        background: #201d30;
+    }
+
+    &::after {
+        top: auto;
+        bottom: 0;
+    }
+`;
+
+const StyledInput = styled.input`
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    box-sizing: border-box;
+    font-size: 1rem;
+    
+
+    &:focus {
+        border-color: #4b548a;
+        outline: none;
+    }
+
+    &::placeholder {
+        color: #bbb;
+    }
+
+   
+`;
+
+const StyledButton = styled.button`
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background: #4b548a;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+    margin: 10px 0;
+
+    &:hover {
+        transform: scale(1.05);
+        background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
+    }
+`;
 
 export default EditProfile;

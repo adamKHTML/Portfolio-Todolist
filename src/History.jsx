@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
+import DashNav from './components/DashNav';
 
 const HistoryPage = () => {
     const [tasks, setTasks] = useState([]);
@@ -71,7 +72,9 @@ const HistoryPage = () => {
 
     return (
         <GlobalStyles>
-
+            <FixedNav>
+                <DashNav />
+            </FixedNav>
             <PageContainer>
                 <h2>Historique des Tâches</h2>
                 {loading ? (
@@ -140,6 +143,9 @@ const TaskTable = ({ tasks }) => (
     </Table>
 );
 
+
+
+
 const GlobalStyles = styled.div`
     font-size: 100%;
     font-family: 'Roboto', sans-serif;
@@ -148,6 +154,15 @@ const GlobalStyles = styled.div`
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
+`;
+
+const FixedNav = styled.div`
+    position: fixed;
+    top: 35px;
+    left: 115px;
+    width: 100%;
+    z-index: 10;
+   
 `;
 
 const PageContainer = styled.div`
@@ -168,14 +183,22 @@ const Table = styled.table`
     width: 100%;
     border-collapse: collapse;
 
-    th, td {
-        border: 1px solid #ddd;
+    tr {
+        border-radius: 0.55rem !important
+    }
+    td {
+        background: white;
+        border-radius: 0.75em;
         padding: 8px;
         text-align: left;
     }
 
     th {
-        background-color: #f2f2f2;
+        background-color: #9895e1;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+   
     }
 
     tr:nth-child(even) {
