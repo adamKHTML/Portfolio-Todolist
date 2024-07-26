@@ -12,8 +12,8 @@ const DashNav = () => {
             <i className="pi pi-angle-double-left"></i>
           </SidebarBrand>
         </Link>
-        <CustomLogo>
-          Pronote
+        <CustomLogo src="/img/ProLogo.svg" alt="Pronote Logo SVG">
+
         </CustomLogo>
       </CustomContainer>
     </CustomNavbar>
@@ -27,13 +27,13 @@ const CustomNavbar = styled(Navbar)`
   }
 `;
 
-const CustomLogo = styled.div`
-  width: 100px;
-  height: auto;
+const CustomLogo = styled.img`
+  width: 24%;
+  height: 24%;
   margin: auto;
   display: block;
   font-size: 2em;
-  margin-left: 86%; /* Augmenter la valeur pour plus d'espace */
+  margin-left: 66%; /* Augmenter la valeur pour plus d'espace */
 `;
 
 const CustomContainer = styled(Container)`

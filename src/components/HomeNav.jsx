@@ -38,7 +38,7 @@ const HomeNav = () => {
             <Link to="/"><span>Home</span></Link>
           )}
         </CustomNavbarBrand>
-        <CustomLogo src="#" alt="Dev Logo SVG" />
+        <CustomLogo src="/img/DarkLogo.svg" alt="Pronote Logo SVG" />
 
       </CustomContainer>
     </CustomNavbar>
@@ -59,8 +59,8 @@ const CustomNavbar = styled(Navbar)`
 `;
 
 const CustomLogo = styled.img`
-   width: 100px;  
-  height: auto;
+   width: 15%;  
+  height: 15%;
   margin: auto;   
   display: block; 
 `;
@@ -77,6 +77,7 @@ const CustomNavbarBrand = styled(Navbar.Brand)`
   display: inline-block;
   position: relative;
   transition: color 0.3s ease-in-out;
+  color: white;
 
   &:after {
     content: '';
