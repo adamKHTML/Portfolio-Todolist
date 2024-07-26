@@ -87,7 +87,7 @@ const Dashboard = () => {
                         Historique des Tâches
                     </SidebarBrand>
                 </SidebarLink>
-                <SidebarLink to="/#">
+                <SidebarLink to="/Chat">
                     <SidebarBrand>
                         <i className="pi pi-comments" style={{ color: '#708090' }}></i>
                         Discussions / Chats

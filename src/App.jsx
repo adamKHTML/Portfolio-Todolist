@@ -10,6 +10,7 @@ import EditProfile from './components/EditProfil';
 import EditTask from './components/EditTask';
 import HistoryPage from './History';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ChatApp from './Chat';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/Edit" element={<EditProfile />} />
         <Route path="/Task/:id" element={<EditTask />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path='/Chat' element={<ChatApp />} />
       </Routes>
 
     </Router>
