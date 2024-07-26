@@ -15,14 +15,14 @@ const Chat = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            if (!currentUserId) return; // Only fetch users if currentUserId is available
+            if (!currentUserId) return;
 
             setLoading(true);
             try {
                 const usersCollection = await getDocs(collection(db, 'users'));
                 const usersList = usersCollection.docs
                     .map(doc => ({ id: doc.id, ...doc.data() }))
-                    .filter(user => user.id !== currentUserId); // Exclude current user
+                    .filter(user => user.id !== currentUserId);
                 setUsers(usersList);
             } catch (error) {
                 console.error("Erreur lors de la récupération des utilisateurs : ", error);
@@ -31,11 +31,10 @@ const Chat = () => {
             }
         };
 
-        // Set up auth state change listener
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, user => {
             if (user) {
                 setCurrentUserId(user.uid);
-                fetchUsers(); // Fetch the users once the current user is known
+                fetchUsers();
             }
         });
 
@@ -52,18 +51,12 @@ const Chat = () => {
                 where('recipientId', 'in', [currentUserId, userId])
             );
             const commentsSnapshot = await getDocs(q);
-
-            // Log the results of the query
-            console.log('Comments Snapshot:', commentsSnapshot.docs.map(doc => doc.data()));
-
             const messagesList = commentsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
 
-            // Sort messages by timestamp to ensure the conversation is displayed in chronological order
             messagesList.sort((a, b) => a.timestamp.toMillis() - b.timestamp.toMillis());
-
             setMessages(messagesList);
         } catch (error) {
             console.error("Erreur lors de la récupération des messages : ", error);
@@ -117,11 +110,14 @@ const Chat = () => {
             <Container>
                 <Sidebar>
                     {loading ? (
-                        <div>Chargement...</div>
+                        <Loader>
+                            <p>Loading</p>
+                        </Loader>
                     ) : (
                         <ul>
                             {users.map(user => (
                                 <li key={user.id} onClick={() => selectUser(user.id)}>
+                                    <img src={user.avatar || 'default-avatar.png'} alt={user.firstName} className="avatar" />
                                     <p className="username">{user.firstName} {user.lastName}</p>
                                 </li>
                             ))}
@@ -137,6 +133,7 @@ const Chat = () => {
                                     messages.map((message, index) => (
                                         <Message key={index}>
                                             <p>{message.content}</p>
+                                            <img src={message.senderAvatar || 'default-avatar.png'} alt="Sender Avatar" />
                                         </Message>
                                     ))
                                 ) : (
@@ -155,6 +152,7 @@ const Chat = () => {
                         </>
                     ) : (
                         <Init>
+                            <i className="fa fa-inbox"></i>
                             <h4>Sélectionnez une conversation à gauche</h4>
                         </Init>
                     )}
@@ -170,36 +168,52 @@ const FixedNav = styled.div`
     left: 115px;
     width: 100%;
     z-index: 10;
-   
 `;
-
 
 const Container = styled.div`
     display: flex;
     height: 100vh;
-    background: #f0f0f0;
+    background: linear-gradient(180deg, #2EC4B6, #9EB1E9);
+    font-family: 'Montserrat', sans-serif;
 `;
 
 const Sidebar = styled.aside`
     width: 300px;
-    background: #fff;
+    background: #2EC4B6;
     border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
     ul {
         list-style: none;
         padding: 0;
         margin: 0;
+        width: 100%;
     }
     li {
-        padding: 1em;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 1em 2em;
         cursor: pointer;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #ccc;
+        transition: background 0.3s ease;
         &:hover {
-            background: #f9f9f9;
+            transform: scale(1.05);
+        background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
         }
+    }
+    .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 15px;
     }
     .username {
         font-size: 1rem;
         font-weight: bold;
+        color: #fff;
     }
 `;
 
@@ -208,61 +222,109 @@ const Main = styled.main`
     padding: 20px;
     display: flex;
     flex-direction: column;
+    background: #FFFFFF;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transform: scale(1.035);
 `;
 
 const Messages = styled.div`
     flex: 1;
     overflow-y: auto;
     margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #F9F9F9;
 `;
 
 const Message = styled.div`
-    background: #e1f5fe;
+    display: flex;
+    align-items: flex-start;
+    background: #E1F5FE;
     margin: 10px 0;
     padding: 10px;
-    border-radius: 5px;
-    word-wrap: break-word;
+    border-radius: 8px;
+    transition: opacity 0.45s ease-in-out;
+    opacity: 1;
+    p {
+        font-size: 0.9em;
+        color: #333;
+        margin: 0;
+        flex: 1;
+    }
+    img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-left: 10px;
+    }
+    &:nth-of-type(even) {
+        background: #B2EBF2;
+    }
 `;
 
 const MessageInput = styled.div`
     display: flex;
+    align-items: center;
+    border-top: 1px solid #ccc;
+    padding: 10px;
     input {
         flex: 1;
         padding: 10px;
+        border: none;
+        outline: none;
         font-size: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 10px;
+        color: #555;
+        background: transparent;
     }
     button {
         padding: 10px 20px;
         font-size: 1rem;
         border: none;
-        border-radius: 5px;
-        background: #4b548a;
+        border-radius: 8px;
+        background: #2EC4B6;
         color: white;
         cursor: pointer;
         transition: transform 0.3s ease, background 0.3s ease;
         &:hover {
             transform: scale(1.05);
-            background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
+        background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
         }
     }
 `;
 
 const Init = styled.div`
-    flex: 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    i {
+        font-size: 3rem;
+    }
     h4 {
-        color: #888;
+        margin-top: 1rem;
+        font-size: 1.5rem;
+    }
+`;
+
+const Loader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    p {
+        font-size: 1.2rem;
+        color: #555;
     }
 `;
 
 const EmptyState = styled.div`
+    text-align: center;
     color: #888;
-    font-size: 1.2em;
+    margin-top: 20px;
 `;
 
 export default Chat;
