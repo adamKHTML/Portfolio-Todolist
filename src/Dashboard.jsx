@@ -69,31 +69,37 @@ const Dashboard = () => {
         <>
             <GlobalStyle />
             <Sidebar>
-                <SidebarLink to="/Edit">
-                    <SidebarBrand>
-                        <i className="pi pi-user-edit" style={{ color: '#708090' }}></i>
-                        Modifier profil
-                    </SidebarBrand>
-                </SidebarLink>
-                <SidebarLink to="/Formulaire">
-                    <SidebarBrand>
-                        <i className="pi pi-pencil" style={{ color: '#708090' }}></i>
-                        Créer une tâche
-                    </SidebarBrand>
-                </SidebarLink>
-                <SidebarLink to="/history">
-                    <SidebarBrand>
-                        <i className="pi pi-history" style={{ color: '#708090' }}></i>
-                        Historique des Tâches
-                    </SidebarBrand>
-                </SidebarLink>
-                <SidebarLink to="/Chat">
-                    <SidebarBrand>
-                        <i className="pi pi-comments" style={{ color: '#708090' }}></i>
-                        Discussions / Chats
-                    </SidebarBrand>
-                </SidebarLink>
-                <Logout onClick={handleLogout} className="logout-button">Logout</Logout>
+                <div className='Container' style={{ marginTop: '60px' }}>
+                    <SidebarLink to="/Edit">
+                        <SidebarBrand>
+                            <i className="pi pi-user-edit" style={{ color: '#708090' }}></i>
+                            Modifier profil
+                        </SidebarBrand>
+                    </SidebarLink>
+                    <SidebarLink to="/Formulaire">
+                        <SidebarBrand>
+                            <i className="pi pi-pencil" style={{ color: '#708090' }}></i>
+                            Créer une tâche
+                        </SidebarBrand>
+                    </SidebarLink>
+                    <SidebarLink to="/history">
+                        <SidebarBrand>
+                            <i className="pi pi-history" style={{ color: '#708090' }}></i>
+                            Historique des Tâches
+                        </SidebarBrand>
+                    </SidebarLink>
+                    <SidebarLink to="/Chat">
+                        <SidebarBrand>
+                            <i className="pi pi-comments" style={{ color: '#708090' }}></i>
+                            Discussions / Chats
+                        </SidebarBrand>
+                    </SidebarLink>
+                    <Logout onClick={handleLogout} className="logout-button">
+                        <i className="pi pi-sign-out" style={{ color: '#708090' }}> </i>
+
+                        Logout
+                    </Logout>
+                </div>
             </Sidebar>
 
             <MainSection>
@@ -232,9 +238,22 @@ const SubTaskItem = styled.li`
 `;
 
 const Logout = styled.div`
-    color: black;
+    color: #4f5a64;
     border: none;
     cursor: pointer;
+    display: flex;
+    justify-content: space-evenly;
+    
+
+
+  &:hover  {
+    color: #EF476F;
+    transform: scale(1.25); 
+   transition: transform 0.3s ease-in-out;
+  
+  }
+
+ 
 `;
 
 const Sidebar = styled.div`
