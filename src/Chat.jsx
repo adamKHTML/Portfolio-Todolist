@@ -131,9 +131,14 @@ const Chat = () => {
                             <Messages>
                                 {messages.length > 0 ? (
                                     messages.map((message, index) => (
-                                        <Message key={index}>
-                                            <p>{message.content}</p>
-                                            <img src={message.senderAvatar || 'default-avatar.png'} alt="Sender Avatar" />
+                                        <Message
+                                            key={index}
+                                            isCurrentUser={message.senderId === currentUserId}
+                                        >
+                                            <MessageContent isCurrentUser={message.senderId === currentUserId}>
+                                                <p>{message.content}</p>
+
+                                            </MessageContent>
                                         </Message>
                                     ))
                                 ) : (
@@ -240,18 +245,33 @@ const Messages = styled.div`
 
 const Message = styled.div`
     display: flex;
-    align-items: flex-start;
-    background: #E1F5FE;
+    justify-content: ${({ isCurrentUser }) => (isCurrentUser ? 'flex-end' : 'flex-start')};
     margin: 10px 0;
+`;
+
+const MessageContent = styled.div`
+    display: flex;
+    align-items: center;
+    max-width: 60%;
+    background: ${({ isCurrentUser }) => (isCurrentUser ? '#DCF8C6' : '#FFFFFF')};
     padding: 10px;
-    border-radius: 8px;
-    transition: opacity 0.45s ease-in-out;
-    opacity: 1;
+    border-radius: 15px;
+    position: relative;
+    &:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        ${({ isCurrentUser }) => (isCurrentUser ? 'right' : 'left')}: -10px;
+        margin-top: -10px;
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent;
+        border-top-color: ${({ isCurrentUser }) => (isCurrentUser ? '#DCF8C6' : '#FFFFFF')};
+        ${({ isCurrentUser }) => (isCurrentUser ? 'border-right-color' : 'border-left-color')}: transparent;
+    }
     p {
-        font-size: 0.9em;
-        color: #333;
         margin: 0;
-        flex: 1;
+        color: #333;
     }
     img {
         width: 30px;
@@ -259,34 +279,31 @@ const Message = styled.div`
         border-radius: 50%;
         margin-left: 10px;
     }
-    &:nth-of-type(even) {
-        background: #B2EBF2;
-    }
 `;
 
 const MessageInput = styled.div`
     display: flex;
-    align-items: center;
-    border-top: 1px solid #ccc;
-    padding: 10px;
+    border-top: 1px solid #ddd;
+    padding: 10px 0 0;
     input {
         flex: 1;
-        padding: 10px;
         border: none;
+        border-radius: 20px;
+        padding: 10px;
         outline: none;
         font-size: 1rem;
-        color: #555;
-        background: transparent;
+        background: #f1f1f1;
+        margin-right: 10px;
     }
     button {
-        padding: 10px 20px;
-        font-size: 1rem;
-        border: none;
-        border-radius: 8px;
         background: #2EC4B6;
+        border: none;
+        border-radius: 20px;
         color: white;
+        padding: 10px 20px;
         cursor: pointer;
-        transition: transform 0.3s ease, background 0.3s ease;
+        font-size: 1rem;
+        transition: background 0.3s ease;
         &:hover {
             transform: scale(1.05);
         background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
@@ -294,13 +311,19 @@ const MessageInput = styled.div`
     }
 `;
 
+
+
+
+
+
+
 const Init = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #888;
+    color: #2EC4B6;
     i {
         font-size: 3rem;
     }
@@ -317,7 +340,7 @@ const Loader = styled.div`
     height: 100%;
     p {
         font-size: 1.2rem;
-        color: #555;
+        color: #2EC4B6;
     }
 `;
 
