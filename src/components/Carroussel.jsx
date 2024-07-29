@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
-
 // Slide component
 const Slide = ({ slide, current }) => {
     const { index, title, description } = slide;
@@ -9,10 +8,21 @@ const Slide = ({ slide, current }) => {
 
     if (current === index) classNames += " slide--current";
 
+    // Liste des images SVG
+    const imageSources = [
+        '/img/Profile.jpg',
+        '/img/ShareTask.jpg',
+        '/img/Job.jpg',
+        '/img/Deadline.jpg',
+        '/img/History.jpg',
+        '/img/Chat.jpg'
+    ];
+    const imageSrc = imageSources[index % imageSources.length];
+
     return (
         <SlideContainer className={classNames}>
             <SlideContent>
-                <ImagePlaceholder />
+                <ImagePlaceholder src={imageSrc} />
                 <TextContent>
                     <Title>{title}</Title>
                     <Description>{description}</Description>
@@ -104,25 +114,26 @@ const SlideContent = styled.div`
     align-items: center;
 `;
 
-const ImagePlaceholder = styled.div`
-    background-color: black;
-    width: 200px;
-    height: 200px;
+const ImagePlaceholder = styled.img`
+    width: 540px;
+    height: 430px;
     margin-right: 20px;
+    background-size: cover;  
+     background-position: center; 
+    background-repeat: no-repeat;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const TextContent = styled.div`
     display: flex;
     flex-direction: column;
     max-width: 800px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color : #fff; 
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
- 
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`

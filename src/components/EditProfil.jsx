@@ -5,6 +5,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { db, FIREBASE_AUTH } from '../firebaseConfig';
 import styled from 'styled-components';
 import DashNav from './DashNav';
+import { Modal, Button } from 'react-bootstrap';
 
 const EditProfile = () => {
     const [userData, setUserData] = useState({
@@ -15,6 +16,7 @@ const EditProfile = () => {
     });
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -49,6 +51,11 @@ const EditProfile = () => {
         e.preventDefault();
         setLoading(true);
 
+        if (!userData.firstName || !userData.lastName || !userData.job || !userData.email) {
+            setShowModal(true);
+            return;
+        }
+
         try {
             await updateDoc(doc(db, 'users', userId), userData);
             alert('Profil mis à jour avec succès!');
@@ -60,6 +67,10 @@ const EditProfile = () => {
         }
     };
 
+    const handleClose = () => {
+        setShowModal(false);
+        window.location.reload(); // Rafraîchir la page
+    };
     return (
 
         <>
@@ -102,6 +113,19 @@ const EditProfile = () => {
                 ) : (
                     <StyledButton type='submit' onClick={handleSubmit}>Mettre à jour</StyledButton>
                 )}
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Incomplete Form</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Veuillez remplir tous les champs avant de soumettre le formulaire.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
             </StyledForm>
         </>

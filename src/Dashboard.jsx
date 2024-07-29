@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createGlobalStyle, styled } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Message from './components/Message';
@@ -20,6 +20,7 @@ const Dashboard = () => {
             if (user) {
                 console.log("User logged in:", user.uid);
                 setCurrentUser(user);
+                fetchUserProfile(user.uid);
                 fetchTasks(user.uid);
             } else {
                 console.log("No user logged in");
@@ -31,6 +32,30 @@ const Dashboard = () => {
 
         return () => unsubscribe();
     }, [navigate]);
+
+    const fetchUserProfile = async (userId) => {
+        try {
+            // Référence au document utilisateur par ID
+            const userDocRef = doc(db, 'users', userId);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                console.log('User Data:', userData);
+
+                // Mettre à jour l'état avec les données utilisateur
+                setCurrentUser(prevState => ({
+                    ...prevState,
+                    firstName: userData.firstName || 'Prénom inconnu', // Valeur par défaut si non défini
+                    lastName: userData.lastName || 'Nom inconnu' // Valeur par défaut si non défini
+                }));
+            } else {
+                console.warn('Aucun utilisateur trouvé avec cet ID.');
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération du profil utilisateur:", error);
+        }
+    };
 
     const handleLogout = () => {
         FIREBASE_AUTH.signOut()
@@ -113,8 +138,9 @@ const Dashboard = () => {
 
             <MainSection>
                 <Title>
-                    <h2>Bienvenue, {currentUser ? currentUser.email : 'Cher utilisateur'}</h2>
+                    <h2>Bienvenue, {currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Cher utilisateur'}</h2>
                 </Title>
+
 
                 <ChecklistContainer>
                     {loading ? (
@@ -156,7 +182,7 @@ const Dashboard = () => {
                                                         ))}
                                                     </SubTaskList>
                                                 ) : (
-                                                    <p>No sub-tasks available for this task.</p>
+                                                    <p>Aucune sous-tâche.</p>
                                                 )}
                                             </CardBody>
                                         </Card>
@@ -173,7 +199,7 @@ const Dashboard = () => {
                             );
                         })
                     ) : (
-                        <p>No tasks available.</p>
+                        <p>Aucune tâche pour l'instant.</p>
                     )}
                 </ChecklistContainer>
             </MainSection>
@@ -224,11 +250,14 @@ const CardBody = styled.div`
     margin-top: 20px;
     background: #fff;
     border-radius: 0.75rem;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
     
 `;
 
 const CardText = styled.p`
-    margin: 0 0 10px;
+    margin: 0;
 `;
 
 
@@ -236,6 +265,7 @@ const CardText = styled.p`
 const Deadline = styled.div`
     margin: 0;
     color: gray;
+   
 `;
 
 const SubTaskList = styled.ul`

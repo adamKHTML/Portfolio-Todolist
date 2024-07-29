@@ -4,7 +4,7 @@ import { db, FIREBASE_AUTH } from '../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Button, FormControl, Form, InputGroup, FormSelect } from 'react-bootstrap';
+import { Button, FormControl, Form, InputGroup, Modal } from 'react-bootstrap';
 import styled from 'styled-components';
 import { fr } from 'date-fns/locale';
 import DashNav from './DashNav';
@@ -18,6 +18,7 @@ const TaskForm = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [currentTask, setCurrentTask] = useState({ id: '', name: '' });
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -56,8 +57,8 @@ const TaskForm = () => {
             return;
         }
 
-        if (!name || !description || !assignedTo || !deadline || tasks.length === 0) {
-            console.error('All fields must be filled out');
+        if (!name || !description || !assignedTo || !deadline) {
+            setShowModal(true);
             return;
         }
 
@@ -72,6 +73,8 @@ const TaskForm = () => {
                 tasks
             });
 
+            alert('Tâche ajoutée avec succès!');
+
             // Reset form
             setName('');
             setDescription('');
@@ -79,9 +82,16 @@ const TaskForm = () => {
             setDeadline(new Date());
             setTasks([]);
             setCurrentTask({ id: '', name: '' });
+
+
         } catch (error) {
             console.error('Error adding task: ', error);
         }
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+        window.location.reload();
     };
 
     return (
@@ -184,6 +194,19 @@ const TaskForm = () => {
                 </div>
 
                 <StyledButton type="submit" onClick={handleSubmit}>Create Task</StyledButton>
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Incomplete Form</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Veuillez remplir tous les champs avant de soumettre le formulaire.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </StyledForm>
         </>
     );
@@ -347,12 +370,11 @@ const StyledDateInput = styled.input`
     margin-top: 10px;
     font-size: 1rem;
 
+
     &:focus {
         outline: none;
         border-color: #4b548a;
     }
 
-    &::placeholder {
-        color: #bbb;
-    }
+    
 `;

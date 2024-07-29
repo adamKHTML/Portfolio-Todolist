@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore'
 import { db, FIREBASE_AUTH } from '../firebaseConfig';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Button, FormControl, Form, InputGroup, FormSelect } from 'react-bootstrap';
+import { Button, FormControl, Form, InputGroup, Modal } from 'react-bootstrap';
 import { onAuthStateChanged } from 'firebase/auth';
 import styled from 'styled-components';
 import DashNav from './DashNav';
@@ -22,6 +22,7 @@ const EditTask = () => {
     const [tasks, setTasks] = useState([]);
     const [currentTask, setCurrentTask] = useState({ id: '', name: '', statut: 0 });
     const [status, setStatus] = useState(0);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchTask = async () => {
@@ -106,7 +107,10 @@ const EditTask = () => {
             console.error('No user is logged in');
             return;
         }
-
+        if (!name || !description || !assignedTo || !deadline) {
+            setShowModal(true);
+            return;
+        }
         try {
             await updateDoc(doc(db, 'tasks', id), {
                 name,
@@ -116,12 +120,16 @@ const EditTask = () => {
                 tasks,
                 status
             });
+            alert('Tâche mis à jour avec succès!');
             navigate('/dashboard');
         } catch (error) {
             console.error('Error updating task:', error);
         }
     };
-
+    const handleClose = () => {
+        setShowModal(false);
+        window.location.reload(); // Rafraîchir la page
+    };
     return (
 
         <>
@@ -206,6 +214,20 @@ const EditTask = () => {
                 </div>
 
                 <StyledButton type="submit" onClick={handleSubmit}>Update Task</StyledButton>
+
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Incomplete Form</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Veuillez remplir tous les champs avant de soumettre le formulaire.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </StyledForm>
 
         </>
@@ -260,15 +282,10 @@ const TaskItem = styled.li`
     background-color: ${props => (props.statut === 1 ? '#4caf50' : '#f0f0f0')};
       
     gap: 10px;
-    padding: 5px;
     border-radius: 4px;
-    
-        border-radius: 10px;
-        margin-bottom: 10px;
-        padding: 10px;
-        
-        gap: 10px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+   padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 
     span {
         flex-grow: 1;
@@ -289,10 +306,11 @@ const StyledForm = styled.div`
     position: relative;
     margin: 170px auto;
 
-
+    gap: 5px;
+   
 
     h2 {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
 
     a {
@@ -374,7 +392,7 @@ const StyledButton = styled.button`
 const StyledTextarea = styled.textarea`
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    margin: 10px 0 27px;
     background: transparent;
     border: none;
     border-bottom: 1px solid #000000;

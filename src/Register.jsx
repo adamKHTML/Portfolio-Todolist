@@ -5,6 +5,7 @@ import { FIREBASE_AUTH, db } from './firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import styled from 'styled-components';
 import HomeNav from './components/HomeNav';
+import { Modal, Button } from 'react-bootstrap';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -13,12 +14,18 @@ const Register = () => {
     const [lastName, setLastName] = useState('');
     const [job, setJob] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
     const auth = FIREBASE_AUTH;
 
     const signUp = async () => {
         setLoading(true);
+
+        if (!firstName || !lastName || !job || !email) {
+            setShowModal(true);
+            return;
+        }
 
         try {
             // Crée l'utilisateur dans Firebase Authentication
@@ -43,7 +50,10 @@ const Register = () => {
             setLoading(false);
         }
     };
-
+    const handleClose = () => {
+        setShowModal(false);
+        window.location.reload(); // Rafraîchir la page
+    };
     return (
         <>
             <FixedNav>
@@ -89,6 +99,19 @@ const Register = () => {
                         <Link to="/Login">Déjà inscrit ? Connectez-vous ici.</Link>
                     </>
                 )}
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Incomplete Form</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Veuillez remplir tous les champs avant de soumettre le formulaire.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </StyledForm>
 
         </>

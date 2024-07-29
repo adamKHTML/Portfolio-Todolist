@@ -4,17 +4,25 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from './firebaseConfig';
 import styled from 'styled-components';
 import HomeNav from './components/HomeNav';
+import { Modal, Button } from 'react-bootstrap';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
     const auth = FIREBASE_AUTH;
 
     const signIn = async () => {
         setLoading(true);
+
+        if (!email || !password) {
+            setShowModal(true);
+            return;
+        }
+
 
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
@@ -25,6 +33,11 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+        window.location.reload();
     };
 
     return (
@@ -54,6 +67,20 @@ const Login = () => {
                         <Link to="/register">S'inscrire</Link>
                     </>
                 )}
+
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Incomplete Form</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Veuillez remplir tous les champs avant de soumettre le formulaire.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </StyledForm>
         </>
     );
