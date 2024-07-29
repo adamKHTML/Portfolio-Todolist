@@ -142,9 +142,7 @@ const EditTask = () => {
                 />
                 <Form>
                     <InputGroup>
-                        <Form.Control
-                            as="textarea"
-                            aria-label="With textarea"
+                        <StyledTextarea
                             placeholder="Description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -152,25 +150,8 @@ const EditTask = () => {
                         />
                     </InputGroup>
                 </Form>
-                <FormSelect
-                    aria-label="Default select example"
-                    value={assignedTo}
-                    onChange={(e) => setAssignedTo(e.target.value)}
-                    required
-                >
-                    <option value="">Select a user</option>
-                    {users.map(user => (
-                        <option key={user.id} value={user.id}>
-                            {user.firstName} {user.lastName}
-                        </option>
-                    ))}
-                </FormSelect>
-                <DatePicker
-                    selected={deadline}
-                    onChange={(date) => setDeadline(date)}
-                    showTimeSelect
-                    dateFormat="Pp"
-                />
+
+
 
                 {/* Task list */}
                 <ul>
@@ -210,8 +191,8 @@ const EditTask = () => {
                         </TaskItem>
                     ))}
                 </ul>
-                <div>
-                    <FormControl
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <StyledInput
                         type="text"
                         placeholder="New Task"
                         value={currentTask.name}
@@ -390,6 +371,25 @@ const StyledButton = styled.button`
     }
 `;
 
+const StyledTextarea = styled.textarea`
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    box-sizing: border-box;
+    font-size: 1rem;
+
+    &:focus {
+        border-color: #4b548a;
+        outline: none;
+    }
+
+    &::placeholder {
+        color: #bbb;
+    }
+`;
 
 
 

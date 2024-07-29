@@ -135,7 +135,7 @@ const TaskTable = ({ tasks }) => (
                 ))
             ) : (
                 <TableRow>
-                    <div colSpan="3">Aucune tâche disponible.</div>
+                    <div colSpan="3">Aucune tâche.</div>
                 </TableRow>
             )}
         </TableBody>
@@ -144,7 +144,6 @@ const TaskTable = ({ tasks }) => (
 
 const GlobalStyles = styled.div`
     font-size: 100%;
-    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     width: 100%;

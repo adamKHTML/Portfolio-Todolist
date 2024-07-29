@@ -99,9 +99,7 @@ const TaskForm = () => {
                 />
                 <Form>
                     <InputGroup>
-                        <Form.Control
-                            as="textarea"
-                            aria-label="With textarea"
+                        <StyledTextarea
                             placeholder="Description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -109,7 +107,7 @@ const TaskForm = () => {
                         />
                     </InputGroup>
                 </Form>
-                <FormSelect
+                <StyledSelect
                     aria-label="Default select example"
                     value={assignedTo}
                     onChange={(e) => setAssignedTo(e.target.value)}
@@ -121,7 +119,7 @@ const TaskForm = () => {
                             {user.firstName} {user.lastName}
                         </option>
                     ))}
-                </FormSelect>
+                </StyledSelect>
                 <DatePicker
                     selected={deadline}
                     onChange={(date) => setDeadline(date)}
@@ -171,8 +169,8 @@ const TaskForm = () => {
                         </li>
                     ))}
                 </ul>
-                <div>
-                    <FormControl
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <StyledInput
                         type="text"
                         placeholder="New Task"
                         value={currentTask.name}
@@ -281,6 +279,47 @@ const StyledInput = styled.input`
     }
 `;
 
+const StyledTextarea = styled.textarea`
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    box-sizing: border-box;
+    font-size: 1rem;
+
+    &:focus {
+        border-color: #4b548a;
+        outline: none;
+    }
+
+    &::placeholder {
+        color: #bbb;
+    }
+`;
+const StyledSelect = styled.select`
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    box-sizing: border-box;
+    font-size: 1rem;
+
+    &:focus {
+        border-color: #4b548a;
+        outline: none;
+    }
+
+    &::placeholder {
+        color: #bbb;
+    }
+`;
+
+
+
 const StyledButton = styled.button`
     padding: 10px 20px;
     font-size: 1rem;
@@ -301,8 +340,9 @@ const StyledButton = styled.button`
 const StyledDateInput = styled.input`
     width: 100%;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
     box-sizing: border-box;
     margin-top: 10px;
     font-size: 1rem;
@@ -310,5 +350,9 @@ const StyledDateInput = styled.input`
     &:focus {
         outline: none;
         border-color: #4b548a;
+    }
+
+    &::placeholder {
+        color: #bbb;
     }
 `;

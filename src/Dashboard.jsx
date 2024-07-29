@@ -78,6 +78,7 @@ const Dashboard = () => {
             <GlobalStyle />
             <Sidebar>
                 <div className='Container' style={{ marginTop: '60px' }}>
+                    <CustomLogo src="/img/ProLogo.svg" alt="Pronote Logo SVG" />
                     <SidebarLink to="/Edit">
                         <SidebarBrand>
                             <i className="pi pi-user-edit" style={{ color: '#708090' }}></i>
@@ -318,6 +319,14 @@ const SidebarBrand = styled.div`
 
 
 `;
+const CustomLogo = styled.img`
+  width: 180px;
+  height: 180px;
+ top: 0;
+  
+  font-size: 2.5em;
+ 
+`;
 
 const Title = styled.div`
     color: #282e51;
@@ -325,8 +334,8 @@ const Title = styled.div`
 
 const MainSection = styled.div`
     position: relative;
-    margin-left: 270px;
-    margin-bottom: 90px;
+    margin: 100px 0 90px 270px;
+    
     padding: 20px;
     
 
