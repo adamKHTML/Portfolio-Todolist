@@ -100,6 +100,26 @@ const Chat = () => {
             setLoading(false);
         }
     };
+    //Pour la couleur de fond de l'avatar
+
+
+    const hashStringToNumber = (str) => {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return hash;
+    };
+
+    // Fonction pour générer une couleur de fond basée sur le hash de l'id utilisateur
+    const getColorFromHash = (str) => {
+        const hash = hashStringToNumber(str);
+        const colorIndex = Math.abs(hash) % colors.length;
+        return colors[colorIndex];
+    };
+
+    // Couleurs prédéfinies
+    const colors = ['#FFB6C1', '#FF8C00', '#FFD700', '#ADFF2F', '#00CED1', '#1E90FF', '#9370DB'];
 
     return (
         <>
@@ -117,7 +137,9 @@ const Chat = () => {
                         <ul>
                             {users.map(user => (
                                 <li key={user.id} onClick={() => selectUser(user.id)}>
-                                    <img src={user.avatar || 'default-avatar.png'} alt={user.firstName} className="avatar" />
+                                    <Avatar style={{ backgroundColor: getColorFromHash(user.id) }}>
+                                        {user.lastName.charAt(0).toUpperCase()}
+                                    </Avatar>
                                     <p className="username">{user.firstName} {user.lastName}</p>
                                 </li>
                             ))}
@@ -209,17 +231,25 @@ const Sidebar = styled.aside`
         background: linear-gradient(45deg, #51fbdc 33%, #a8fdee 33%, #a8fdee 66%, #d4fef7 66%);
         }
     }
-    .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        margin-right: 15px;
-    }
+    
     .username {
         font-size: 1rem;
         font-weight: bold;
         color: #fff;
     }
+`;
+
+
+const Avatar = styled.div`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1rem;
+    color: white;
 `;
 
 const Main = styled.main`

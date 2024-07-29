@@ -6,7 +6,7 @@ import { db, FIREBASE_AUTH } from './firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Message from './components/Message';
 import 'primeicons/primeicons.css';
-
+import DeleteTask from './components/DeleteTask';
 
 const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
@@ -63,6 +63,14 @@ const Dashboard = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleDeleteSuccess = (deletedTaskId) => {
+        setTasks(tasks.filter(task => task.id !== deletedTaskId));
+    };
+
+    const handleDeleteError = () => {
+        console.error('Error deleting task');
     };
 
     return (
@@ -152,6 +160,14 @@ const Dashboard = () => {
                                             </CardBody>
                                         </Card>
                                     </Link>
+                                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                        <DeleteTask
+                                            taskId={task.id}
+                                            status={task.status}
+                                            onDeleteSuccess={handleDeleteSuccess}
+                                            onDeleteError={handleDeleteError}
+                                        />
+                                    </div>
                                 </div>
                             );
                         })
