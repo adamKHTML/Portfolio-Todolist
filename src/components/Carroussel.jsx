@@ -66,10 +66,10 @@ const Carrousel = () => {
     const slidesData = [
         { index: 0, title: "Personnaliser votre profil", description: "N'hésitez pas à changer vos informations si nécessaire." },
         { index: 1, title: "Partager des tâches à vos coéquipiers", description: "Vous pouvez choisir un coéquipier déjà inscrit pour lui envoyer des notes et inscrire un temps imparti pour faire cette tâche." },
-        { index: 2, title: "Spécifier votre métier", description: "Descriptions pas encore trouvée." },
-        { index: 3, title: "Remplissez les tâches avant le temps imparti", description: "Descriptions pas encore trouvée." },
-        { index: 4, title: "Consulter votre historique", description: "Descriptions pas encore trouvée." },
-        { index: 5, title: "Échanger avec vos coéquipiers", description: "Descriptions pas encore trouvée." },
+        { index: 2, title: "Spécifier votre métier", description: "Indiquez votre métier ou votre rôle au sein de l'équipe pour une meilleure organisation et collaboration." },
+        { index: 3, title: "Remplissez les tâches avant le temps imparti", description: "Assurez-vous de compléter les tâches attribuées dans les délais pour maintenir la fluidité du projet." },
+        { index: 4, title: "Consulter votre historique", description: "Visualisez vos actions passées, vos tâches terminées et vos contributions au projet." },
+        { index: 5, title: "Échanger avec vos coéquipiers", description: "Utilisez la plateforme pour communiquer directement avec vos coéquipiers, échanger des idées et coordonner vos efforts." },
     ];
 
     return <Slider slides={slidesData} />;
