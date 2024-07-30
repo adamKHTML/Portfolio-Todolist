@@ -5,7 +5,7 @@ import { Navbar, Container } from 'react-bootstrap';
 
 
 
-//Il s'agit de la navbar - Header de mes pages 
+//Il s'agit de la navbar de ma Page d'accueil
 
 const HomeNav = () => {
   const [scrolled, setScrolled] = useState(false);

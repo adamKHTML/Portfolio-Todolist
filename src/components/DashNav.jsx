@@ -5,6 +5,9 @@ import { Navbar, Container } from 'react-bootstrap';
 
 const DashNav = () => {
   return (
+
+    //Il s'agit de la navbar des Pages Dashboards 
+
     <CustomNavbar expand="lg" fixed="top">
       <CustomContainer>
         <Link to="/Dashboard">
@@ -33,7 +36,7 @@ const CustomLogo = styled.img`
   margin: auto;
   display: block;
   font-size: 2em;
-  margin-left: 66%; /* Augmenter la valeur pour plus d'espace */
+  margin-left: 66%; 
 `;
 
 const CustomContainer = styled(Container)`

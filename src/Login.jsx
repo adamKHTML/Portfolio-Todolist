@@ -15,6 +15,7 @@ const Login = () => {
 
     const auth = FIREBASE_AUTH;
 
+    //Authentification 
     const signIn = async () => {
         setLoading(true);
 
@@ -27,7 +28,7 @@ const Login = () => {
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
             console.log(response);
-            navigate('/Dashboard'); // Rediriger vers la page d'accueil après la connexion réussie
+            navigate('/Dashboard');
         } catch (error) {
             console.log(error);
         } finally {
@@ -88,7 +89,7 @@ const Login = () => {
 
 export default Login;
 
-// Styles
+
 const FixedNav = styled.div`
     position: fixed;
     top: 0;

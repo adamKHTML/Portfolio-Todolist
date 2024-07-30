@@ -75,7 +75,7 @@ const TaskForm = () => {
 
             alert('Tâche ajoutée avec succès!');
 
-            // Reset form
+
             setName('');
             setDescription('');
             setAssignedTo('');
@@ -214,7 +214,7 @@ const TaskForm = () => {
 
 export default TaskForm;
 
-// Styles pour le composant
+
 
 const FixedNav = styled.div`
     position: fixed;

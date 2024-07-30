@@ -179,12 +179,12 @@ const CategoryWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    max-width: 100%; /* Ensure the wrapper doesn't exceed the container width */
+    max-width: 100%;
 `;
 
 const CategorySection = styled.div`
-    flex: 1 1 250px; /* Flex grow, shrink, and basis */
-    max-width: 100%; /* Ensure sections don't exceed the wrapper's width */
+    flex: 1 1 250px; 
+    max-width: 100%; 
     margin-bottom: 2rem;
     
     h3 {
@@ -200,8 +200,8 @@ const Table = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    max-width: 1280px; /* Set maximum width for tables */
-    overflow-x: auto; /* Allow horizontal scrolling if necessary */
+    max-width: 1280px; 
+    overflow-x: auto;
 `;
 
 const TableHeader = styled.div`

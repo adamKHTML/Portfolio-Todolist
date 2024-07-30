@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
-// Slide component
+
 const Slide = ({ slide, current }) => {
     const { index, title, description } = slide;
     let classNames = "slide";
 
     if (current === index) classNames += " slide--current";
 
-    // Liste des images SVG
+
     const imageSources = [
         '/img/Profile.jpg',
         '/img/ShareTask.jpg',
@@ -32,7 +32,7 @@ const Slide = ({ slide, current }) => {
     );
 };
 
-// Slider component
+
 const Slider = ({ slides }) => {
     const [current, setCurrent] = useState(0);
     const sliderRef = useRef(null);
@@ -61,7 +61,7 @@ const Slider = ({ slides }) => {
     );
 };
 
-// Main Carrousel component
+
 const Carrousel = () => {
     const slidesData = [
         { index: 0, title: "Personnaliser votre profil", description: "N'hésitez pas à changer vos informations si nécessaire." },
@@ -77,7 +77,7 @@ const Carrousel = () => {
 
 export default Carrousel;
 
-// Style components
+
 const SliderContainer = styled.div`
     display: flex;
     justify-content: center;

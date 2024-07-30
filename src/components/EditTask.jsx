@@ -58,7 +58,7 @@ const EditTask = () => {
             if (user) {
                 setCurrentUser(user);
             } else {
-                navigate('/login'); // Redirect to login if user is not authenticated
+                navigate('/login');
             }
         });
 
@@ -128,7 +128,7 @@ const EditTask = () => {
     };
     const handleClose = () => {
         setShowModal(false);
-        window.location.reload(); // Rafraîchir la page
+        window.location.reload();
     };
     return (
 
@@ -161,7 +161,7 @@ const EditTask = () => {
 
 
 
-                {/* Task list */}
+                {/*  liste des Tâches */}
                 <ul>
                     {tasks.map((task, index) => (
                         <TaskItem key={index} statut={task.statut}>

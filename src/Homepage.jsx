@@ -46,22 +46,22 @@ const Homepage = () => {
 export default Homepage;
 
 const Header = styled.div`
-    position: absolute; /* Positionne le Header par rapport à la fenêtre */
+    position: absolute; 
     top: 0;
     left: 0;
-    width: 100vw; /* Prend toute la largeur de la fenêtre */
-    height: 700px; /* Hauteur fixe ou ajustable */
+    width: 100vw; 
+    height: 700px; 
     background-image: url(${BackgroundImg});
     background-size: cover; 
     background-position: center;
     background-repeat: no-repeat; 
     color: #fff;
-    overflow: hidden; /* Cache le contenu qui dépasse */
-    z-index: 1; /* Assure que le Header est au-dessus des autres éléments */
+    overflow: hidden; 
+    z-index: 1;
 `;
 
 const HeaderContent = styled.div`
-    position: relative; /* Contenu du Header positionné relativement */
+    position: relative; 
     width: 100%;
     height: 100%;
     display: flex;
@@ -69,13 +69,13 @@ const HeaderContent = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 0 20px; /* Padding pour éviter le chevauchement du texte avec les bords */
+    padding: 0 20px; 
     box-sizing: border-box;
 `;
 
 const MainContent = styled.div`
-    position: relative; /* Positionne le MainContent par rapport au flux normal */
-    padding-top: 700px; /* Pousse le contenu en dessous du Header, ajusté selon la hauteur du Header */
+    position: relative; 
+    padding-top: 700px; 
 `;
 
 const StyledButton = styled.button`

@@ -32,7 +32,7 @@ const EditProfile = () => {
                 setUserId(user.uid);
                 fetchUserData(user.uid);
             } else {
-                navigate('/login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+                navigate('/login');
             }
         });
 
@@ -69,7 +69,7 @@ const EditProfile = () => {
 
     const handleClose = () => {
         setShowModal(false);
-        window.location.reload(); // Rafraîchir la page
+        window.location.reload();
     };
     return (
 

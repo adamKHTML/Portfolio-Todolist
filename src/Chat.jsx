@@ -100,6 +100,7 @@ const Chat = () => {
             setLoading(false);
         }
     };
+
     //Pour la couleur de fond de l'avatar
 
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH, db } from './firebaseConfig';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import styled from 'styled-components';
 import HomeNav from './components/HomeNav';
 import { Modal, Button } from 'react-bootstrap';
@@ -19,6 +19,8 @@ const Register = () => {
 
     const auth = FIREBASE_AUTH;
 
+
+    // Création Utilisateurs - Ajoute les informations supplémentaires à Firestore avec l'UID de l'utilisateur
     const signUp = async () => {
         setLoading(true);
 
@@ -28,31 +30,31 @@ const Register = () => {
         }
 
         try {
-            // Crée l'utilisateur dans Firebase Authentication
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user; // Utilisation de userCredential.user pour obtenir l'utilisateur créé
 
-            // Ajoute les informations supplémentaires à Firestore avec l'UID de l'utilisateur
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+
             await setDoc(doc(db, 'users', user.uid), {
                 email: email,
                 firstName: firstName,
                 lastName: lastName,
                 job: job
-                // Ajoutez d'autres champs au besoin
+
             });
 
             console.log('Utilisateur enregistré avec succès !', user.uid);
-            navigate('/Login'); // Redirige vers la page de connexion après l'inscription
+            navigate('/Login');
 
         } catch (error) {
-            console.error('Erreur lors de l\'inscription : ', error.message); // Affiche l'erreur spécifique
+            console.error('Erreur lors de l\'inscription : ', error.message);
         } finally {
             setLoading(false);
         }
     };
     const handleClose = () => {
         setShowModal(false);
-        window.location.reload(); // Rafraîchir la page
+        window.location.reload();
     };
     return (
         <>

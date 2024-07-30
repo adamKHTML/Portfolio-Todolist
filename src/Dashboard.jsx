@@ -26,16 +26,17 @@ const Dashboard = () => {
                 console.log("No user logged in");
                 setCurrentUser(null);
                 setTasks([]);
-                navigate('/login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+                navigate('/login');
             }
         });
 
         return () => unsubscribe();
     }, [navigate]);
 
+    // Récupère les données de l' utilisateur par ID
     const fetchUserProfile = async (userId) => {
         try {
-            // Référence au document utilisateur par ID
+
             const userDocRef = doc(db, 'users', userId);
             const userDoc = await getDoc(userDocRef);
 
@@ -43,11 +44,11 @@ const Dashboard = () => {
                 const userData = userDoc.data();
                 console.log('User Data:', userData);
 
-                // Mettre à jour l'état avec les données utilisateur
+
                 setCurrentUser(prevState => ({
                     ...prevState,
-                    firstName: userData.firstName || 'Prénom inconnu', // Valeur par défaut si non défini
-                    lastName: userData.lastName || 'Nom inconnu' // Valeur par défaut si non défini
+                    firstName: userData.firstName || 'Prénom inconnu',
+                    lastName: userData.lastName || 'Nom inconnu'
                 }));
             } else {
                 console.warn('Aucun utilisateur trouvé avec cet ID.');
@@ -68,6 +69,7 @@ const Dashboard = () => {
             });
     };
 
+    // Récupère et Filtre les tâches pour exclure celles dont la date limite est passée
     const fetchTasks = async (userId) => {
         setLoading(true);
         setError(null);
@@ -77,7 +79,7 @@ const Dashboard = () => {
             const querySnapshot = await getDocs(q);
             const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             console.log("Fetched tasks:", tasksData);
-            // Filtrer les tâches pour exclure celles dont la date limite est passée
+
             const now = new Date();
             const filteredTasks = tasksData.filter(task => new Date(task.deadline) > now);
 
@@ -152,7 +154,7 @@ const Dashboard = () => {
                             const deadlineDate = new Date(task.deadline);
                             const daysRemaining = Math.ceil((deadlineDate - new Date()) / (1000 * 60 * 60 * 24));
                             const showMessage = task.status !== 2;
-                            console.log(`Task ID: ${task.id}, Days Remaining: ${daysRemaining}, Show Message: ${showMessage}`); // Debugging line
+                            console.log(`Task ID: ${task.id}, Days Remaining: ${daysRemaining}, Show Message: ${showMessage}`);
 
                             return (
                                 <div key={task.id}>

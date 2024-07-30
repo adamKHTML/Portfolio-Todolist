@@ -11,10 +11,10 @@ const DeleteTask = ({ taskId, status, onDeleteSuccess, onDeleteError }) => {
 
         try {
             await deleteDoc(doc(db, 'tasks', taskId));
-            onDeleteSuccess(taskId);  // Informer le parent du succès
+            onDeleteSuccess(taskId);
         } catch (error) {
             console.error('Error deleting task:', error);
-            onDeleteError();  // Informer le parent de l'erreur
+            onDeleteError();
         }
     };
 
